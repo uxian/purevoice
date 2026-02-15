@@ -188,6 +188,11 @@ function App() {
                       onChange={handleSongChange}
                       className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 cursor-pointer transition-all outline-none"
                     >
+                      {songsForSelect.length === 0 && songQuery.trim() ? (
+                        <option value="" disabled>
+                          No matching songs
+                        </option>
+                      ) : null}
                       {songsForSelect.map(song => (
                         <option key={song.id} value={song.id}>
                           {(song.meta.emoji ? `${song.meta.emoji} ` : '') + song.title + (song.meta.artist ? ` — ${song.meta.artist}` : '')}
