@@ -150,6 +150,7 @@ function App() {
               {/* Start Button Block */}
               <button
                 onClick={startAudio}
+                aria-label="Start session (enable microphone)"
                 className="w-full group relative px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-lg transition-all shadow-xl shadow-slate-200 hover:shadow-2xl hover:shadow-slate-300 hover:-translate-y-1 active:scale-95 overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -176,6 +177,7 @@ function App() {
                       value={songQuery}
                       onChange={e => setSongQuery(e.target.value)}
                       placeholder="Search songs (title / artist / tags)…"
+                      aria-label="Search songs"
                       className="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white pl-11 pr-4 py-2.5 rounded-2xl text-sm font-semibold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 transition-all outline-none"
                     />
                   </div>
@@ -187,6 +189,7 @@ function App() {
                     <select
                       value={selectedSongId}
                       onChange={handleSongChange}
+                      aria-label="Select song"
                       className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 cursor-pointer transition-all outline-none"
                     >
                       {songsForSelect.length === 0 && songQuery.trim() ? (
@@ -210,6 +213,7 @@ function App() {
                         type="checkbox"
                         checked={favoritesOnly}
                         onChange={e => setFavoritesOnly(e.target.checked)}
+                        aria-label="Show favorites only"
                         className="h-4 w-4 rounded border-slate-300 text-rose-500 focus:ring-rose-200"
                       />
                       Favorites only
@@ -227,6 +231,13 @@ function App() {
                             : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
                       }`}
                       title={selectedSongId === 'free' ? 'Favorites not available in Free Style mode' : selectedIsFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                      aria-label={
+                        selectedSongId === 'free'
+                          ? 'Favorites not available in Free Style mode'
+                          : selectedIsFavorite
+                            ? 'Remove selected song from favorites'
+                            : 'Add selected song to favorites'
+                      }
                     >
                       <Star size={14} className={selectedIsFavorite ? 'fill-current' : ''} />
                       {selectedIsFavorite ? 'Saved' : 'Save'}
@@ -272,6 +283,7 @@ function App() {
                   {/* 3. Stop Recording / On Air */}
                   <button
                     onClick={stopAudio}
+                    aria-label="End session (stop microphone)"
                     className="md:ml-auto group flex items-center justify-center gap-2 px-4 py-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100 text-xs font-bold hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all cursor-pointer whitespace-nowrap active:scale-95"
                     title="Click to End Session"
                   >
