@@ -3,7 +3,7 @@ import { useAudio } from './hooks/useAudio';
 // import { usePitchDetector } from './hooks/usePitchDetector'; // Moved to PitchVisualizer
 import { PitchVisualizer } from './components/PitchVisualizer';
 import { ReferenceTonePlayer } from './components/ReferenceTonePlayer';
-import { Mic, MicOff, Music, Sparkles, Activity, Play, Square, ArrowDown, ChevronDown, ListMusic } from 'lucide-react';
+import { Mic, MicOff, Music, Sparkles, Activity, Play, Square, ArrowDown, ChevronDown, ListMusic, Search } from 'lucide-react';
 import { SONGS, getSongById, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
 
@@ -15,6 +15,7 @@ function App() {
   const [isPlayingSong, setIsPlayingSong] = useState(false);
   const [useLowOctave, setUseLowOctave] = useState(false);
   const [selectedSongId, setSelectedSongId] = useState<string>('twinkle');
+  const [songQuery, setSongQuery] = useState('');
 
   const toggleSong = () => {
     setIsPlayingSong(!isPlayingSong);
@@ -30,6 +31,22 @@ function App() {
   const currentSong: Song | undefined = baseSong
     ? (useLowOctave ? transposeSong(baseSong, -12) : baseSong)
     : undefined;
+
+  const q = songQuery.trim().toLowerCase();
+  const filteredSongs = q
+    ? SONGS.filter(song => {
+      const haystack = [song.title, song.meta.artist ?? '', song.meta.language, ...song.meta.tags]
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(q);
+    })
+    : SONGS;
+
+  const selectedBaseSong = selectedSongId === 'free' ? undefined : getSongById(selectedSongId);
+  const songsForSelect =
+    q && selectedBaseSong && !filteredSongs.some(s => s.id === selectedBaseSong.id)
+      ? [selectedBaseSong, ...filteredSongs]
+      : filteredSongs;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans text-slate-600">
@@ -97,24 +114,38 @@ function App() {
             <div className="w-full">
               <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-lg shadow-slate-200/40 border border-white ring-1 ring-slate-100 p-2 md:p-3 flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 transition-all">
 
-                {/* 1. Song Selection (Flexible) */}
-                <div className="relative flex-grow md:flex-grow-[2] min-w-[200px]">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-400 pointer-events-none">
-                    <ListMusic size={18} />
+                {/* 1. Song Search + Selection (Flexible) */}
+                <div className="flex flex-col gap-2 flex-grow md:flex-grow-[2] min-w-[200px]">
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                      <Search size={16} />
+                    </div>
+                    <input
+                      value={songQuery}
+                      onChange={e => setSongQuery(e.target.value)}
+                      placeholder="Search songs (title / artist / tags)…"
+                      className="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white pl-11 pr-4 py-2.5 rounded-2xl text-sm font-semibold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 transition-all outline-none"
+                    />
                   </div>
-                  <select
-                    value={selectedSongId}
-                    onChange={handleSongChange}
-                    className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 cursor-pointer transition-all outline-none"
-                  >
-                    {SONGS.map(song => (
-                      <option key={song.id} value={song.id}>
-                        {(song.meta.emoji ? `${song.meta.emoji} ` : '') + song.title + (song.meta.artist ? ` — ${song.meta.artist}` : '')}
-                      </option>
-                    ))}
-                    <option value="free">🎤 Free Style Mode</option>
-                  </select>
-                  <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+
+                  <div className="relative">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-rose-400 pointer-events-none">
+                      <ListMusic size={18} />
+                    </div>
+                    <select
+                      value={selectedSongId}
+                      onChange={handleSongChange}
+                      className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 cursor-pointer transition-all outline-none"
+                    >
+                      {songsForSelect.map(song => (
+                        <option key={song.id} value={song.id}>
+                          {(song.meta.emoji ? `${song.meta.emoji} ` : '') + song.title + (song.meta.artist ? ` — ${song.meta.artist}` : '')}
+                        </option>
+                      ))}
+                      <option value="free">🎤 Free Style Mode</option>
+                    </select>
+                    <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Divider for Desktop */}
