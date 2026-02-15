@@ -14,6 +14,10 @@ Pure Voice is a lightweight, browser-based singing practice playground (song lib
 - `npm run build` — production build
 - `npm run check` — quick CI-style check (lint + build)
 
-## Notes
+## Microphone troubleshooting
 
-- If microphone input fails, check browser permissions and ensure a microphone device is connected.
+- **Permissions:** click the lock icon in the address bar → allow Microphone. If you previously blocked it, reset the permission and reload.
+- **Secure context:** most browsers require HTTPS (or `http://localhost`) for microphone access.
+- **Device selection:** confirm the correct input is selected in your OS sound settings and/or the browser’s site settings.
+- **Device busy:** close other apps/tabs using the mic (Zoom/Meet/Discord) and refresh.
+- **Safari/iOS:** if it behaves oddly, try Chrome/Edge on desktop first to verify the mic works.
