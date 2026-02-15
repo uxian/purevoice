@@ -13,6 +13,8 @@ export const MIC_ERROR_MESSAGES: Record<string, string> = {
 
     OverconstrainedError:
         'Your microphone does not support the requested audio constraints. Try a different input device.',
+    ConstraintNotSatisfiedError:
+        'Your microphone does not support the requested audio constraints. Try a different input device.',
 
     SecurityError: 'Microphone access blocked by security settings. Make sure you are on HTTPS (or localhost).',
 

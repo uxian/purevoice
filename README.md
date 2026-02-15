@@ -31,4 +31,5 @@ These map to the in-app messages from `getUserMedia` errors (see `src/constants/
 - **“Microphone permission denied” (NotAllowed / PermissionDenied):** allow mic permission for the site, then reload.
 - **“No microphone found” (NotFound):** plug in a mic / select the correct OS input device, then retry.
 - **“Microphone is in use” (NotReadable / TrackStart):** close other apps using the mic (Zoom/Meet/Discord), then refresh.
+- **“Microphone constraints not supported” (Overconstrained / ConstraintNotSatisfied):** try a different input device (or remove strict device constraints).
 - **“Blocked by security settings” (SecurityError):** use HTTPS (or `http://localhost`).
