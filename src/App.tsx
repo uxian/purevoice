@@ -157,13 +157,20 @@ function App() {
                 onClick={() => setShowMicHelp(v => !v)}
                 className="text-xs font-bold underline underline-offset-2 decoration-rose-300 hover:decoration-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 rounded"
                 aria-label={showMicHelp ? 'Hide microphone troubleshooting' : 'Show microphone troubleshooting'}
+                aria-expanded={showMicHelp}
+                aria-controls="mic-troubleshooting"
               >
                 {showMicHelp ? 'Hide help' : 'Troubleshoot'}
               </button>
             </div>
 
             {showMicHelp ? (
-              <div className="text-xs text-slate-600 bg-white/70 backdrop-blur border border-slate-100 rounded-xl p-4">
+              <div
+                id="mic-troubleshooting"
+                role="region"
+                aria-label="Microphone troubleshooting"
+                className="text-xs text-slate-600 bg-white/70 backdrop-blur border border-slate-100 rounded-xl p-4"
+              >
                 <ul className="list-disc pl-5 space-y-1">
                   {MIC_TROUBLESHOOTING_TIPS.map(tip => (
                     <li key={tip.label}>
