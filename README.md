@@ -26,10 +26,11 @@ In-app “Troubleshoot” uses the same checklist (see `src/constants/micTrouble
 
 ### FAQ (common mic errors)
 
-These map to the in-app messages from `getUserMedia` errors (see `src/constants/micErrors.ts`):
+Source of truth for in-app copy + fix steps: `MIC_ERROR_DETAILS` in `src/constants/micErrors.ts`.
 
-- **“Microphone permission denied” (NotAllowed / PermissionDenied):** allow mic permission for the site, then reload.
-- **“No microphone found” (NotFound):** plug in a mic / select the correct OS input device, then retry.
-- **“Microphone is in use” (NotReadable / TrackStart):** close other apps using the mic (Zoom/Meet/Discord), then refresh.
-- **“Microphone constraints not supported” (Overconstrained / ConstraintNotSatisfied):** try a different input device (or remove strict device constraints).
-- **“Blocked by security settings” (SecurityError):** use HTTPS (or `http://localhost`).
+- **NotAllowedError / PermissionDeniedError:** allow microphone permission for the site, then reload.
+- **NotFoundError / DevicesNotFoundError:** connect a microphone and confirm your OS input device.
+- **NotReadableError / TrackStartError:** close other apps/tabs using the mic (Zoom/Meet/Discord), then refresh.
+- **OverconstrainedError / ConstraintNotSatisfiedError:** try a different input device (or loosen constraints).
+- **SecurityError:** use HTTPS (or `http://localhost`).
+- **AbortError:** try again (reload if it keeps happening).
