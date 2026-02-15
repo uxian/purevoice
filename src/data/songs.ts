@@ -311,7 +311,11 @@ export const SHENG_RI_KUAI_LE: Song = {
     tags: ['familiar', 'warmup'],
     emoji: '🥳',
   },
-  notes: HAPPY_BIRTHDAY.notes.map(n => ({ ...n, lyric: n.lyric ? '生' : n.lyric })),
+  notes: (() => {
+    // Match the same note count as HAPPY_BIRTHDAY; lyrics are per-note syllables.
+    const lyrics = ['生', '日', '快', '乐', '祝', '你', '生', '日', '快', '乐', '祝', '你'];
+    return HAPPY_BIRTHDAY.notes.map((n, i) => ({ ...n, lyric: lyrics[i] }));
+  })(),
 };
 
 // 7) Ode to Joy (Beethoven) - opening phrase
