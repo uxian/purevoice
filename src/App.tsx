@@ -137,8 +137,16 @@ function App() {
               <span className="text-sm font-medium">{error}</span>
               <button
                 type="button"
+                onClick={() => startAudio()}
+                className="ml-2 text-xs font-bold px-3 py-1 rounded-lg border border-rose-200 bg-white/70 hover:bg-white text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50"
+                aria-label="Retry microphone"
+              >
+                Retry
+              </button>
+              <button
+                type="button"
                 onClick={() => setShowMicHelp(v => !v)}
-                className="ml-2 text-xs font-bold underline underline-offset-2 decoration-rose-300 hover:decoration-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 rounded"
+                className="text-xs font-bold underline underline-offset-2 decoration-rose-300 hover:decoration-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 rounded"
                 aria-label={showMicHelp ? 'Hide microphone troubleshooting' : 'Show microphone troubleshooting'}
               >
                 {showMicHelp ? 'Hide help' : 'Troubleshoot'}
