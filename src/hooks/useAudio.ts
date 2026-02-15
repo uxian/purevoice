@@ -19,7 +19,10 @@ export function useAudio() {
 
     const startAudio = useCallback(async () => {
         try {
-            const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) {
+                throw new Error('AudioContext is not supported in this browser');
+            }
             const ctx = new AudioContextClass();
 
             if (ctx.state === 'suspended') {
@@ -38,9 +41,10 @@ export function useAudio() {
             setStream(userStream);
             setIsReady(true);
             setError(null);
-        } catch (err: any) {
-            console.error("Error starting audio:", err);
-            setError(err.message || 'Error accessing microphone');
+        } catch (err: unknown) {
+            console.error('Error starting audio:', err);
+            const message = err instanceof Error ? err.message : 'Error accessing microphone';
+            setError(message);
             setIsReady(false);
         }
     }, []);

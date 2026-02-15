@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import ml5 from 'ml5';
+import ml5, { type PitchDetector } from 'ml5';
 
 export function usePitchDetector(
     audioContext: AudioContext | null,
@@ -7,7 +7,7 @@ export function usePitchDetector(
     onPitchDetected?: (frequency: number | null) => void
 ) {
     const [isModelLoaded, setIsModelLoaded] = useState(false);
-    const pitchDetectorRef = useRef<any>(null);
+    const pitchDetectorRef = useRef<PitchDetector | null>(null);
     const rafId = useRef<number | null>(null);
     const isRunningRef = useRef(false);
 
@@ -42,7 +42,7 @@ export function usePitchDetector(
             if (!isRunningRef.current || !pitchDetectorRef.current) return;
 
             try {
-                pitchDetectorRef.current.getPitch((err: any, frequency: number) => {
+                pitchDetectorRef.current.getPitch((err: unknown, frequency: number) => {
                     if (err) {
                         console.error("Pitch detection error:", err);
                         return;

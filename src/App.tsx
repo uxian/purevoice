@@ -4,7 +4,7 @@ import { useAudio } from './hooks/useAudio';
 import { PitchVisualizer } from './components/PitchVisualizer';
 import { ReferenceTonePlayer } from './components/ReferenceTonePlayer';
 import { Mic, MicOff, Music, Sparkles, Activity, Play, Square, ArrowDown, ChevronDown, ListMusic } from 'lucide-react';
-import { TWINKLE_TWINKLE, TWINKLE_TWINKLE_LOW, LET_IT_GO, LET_IT_GO_LOW, QING_HUA_CI, QING_HUA_CI_LOW, KE_AI_NV_REN, KE_AI_NV_REN_LOW } from './data/songs';
+import { SONGS, getSongById, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
 
 function App() {
@@ -26,16 +26,10 @@ function App() {
   };
 
   // Determine current song object
-  let currentSong: Song | undefined;
-  if (selectedSongId === 'twinkle') {
-    currentSong = useLowOctave ? TWINKLE_TWINKLE_LOW : TWINKLE_TWINKLE;
-  } else if (selectedSongId === 'let_it_go') {
-    currentSong = useLowOctave ? LET_IT_GO_LOW : LET_IT_GO;
-  } else if (selectedSongId === 'qing_hua_ci') {
-    currentSong = useLowOctave ? QING_HUA_CI_LOW : QING_HUA_CI;
-  } else if (selectedSongId === 'ke_ai_nv_ren') {
-    currentSong = useLowOctave ? KE_AI_NV_REN_LOW : KE_AI_NV_REN;
-  }
+  const baseSong: Song | undefined = selectedSongId === 'free' ? undefined : getSongById(selectedSongId);
+  const currentSong: Song | undefined = baseSong
+    ? (useLowOctave ? transposeSong(baseSong, -12) : baseSong)
+    : undefined;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans text-slate-600">
@@ -113,10 +107,11 @@ function App() {
                     onChange={handleSongChange}
                     className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 cursor-pointer transition-all outline-none"
                   >
-                    <option value="twinkle">✨ Twinkle Twinkle (Complete)</option>
-                    <option value="let_it_go">❄️ Let It Go (Frozen)</option>
-                    <option value="qing_hua_ci">🎻 青花瓷 (Jay Chou)</option>
-                    <option value="ke_ai_nv_ren">💖 可爱女人 (Jay Chou)</option>
+                    {SONGS.map(song => (
+                      <option key={song.id} value={song.id}>
+                        {(song.meta.emoji ? `${song.meta.emoji} ` : '') + song.title + (song.meta.artist ? ` — ${song.meta.artist}` : '')}
+                      </option>
+                    ))}
                     <option value="free">🎤 Free Style Mode</option>
                   </select>
                   <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
