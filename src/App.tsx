@@ -136,7 +136,12 @@ function App() {
 
         {error && (
           <div className="mb-6 w-full space-y-2">
-            <div className="flex items-center justify-center gap-3 text-rose-600 bg-rose-50 border border-rose-100 p-4 rounded-xl w-full shadow-sm">
+            <div
+              role="alert"
+              aria-live="polite"
+              aria-atomic="true"
+              className="flex items-center justify-center gap-3 text-rose-600 bg-rose-50 border border-rose-100 p-4 rounded-xl w-full shadow-sm"
+            >
               <Activity size={20} />
               <span className="text-sm font-medium">{error}</span>
               <button
