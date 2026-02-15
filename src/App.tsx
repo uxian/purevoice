@@ -37,7 +37,7 @@ const loadFavorites = (): Set<string> => {
 };
 
 function App() {
-  const { startAudio, stopAudio, audioContext, stream, isReady, error } = useAudio();
+  const { startAudio, stopAudio, audioContext, stream, isReady, isStarting, error } = useAudio();
   // Removed top-level usePitchDetector to prevent 60fps re-renders of the entire App tree.
   // Pitch detection is now handled internally by PitchVisualizer via callback refs.
 
@@ -133,6 +133,12 @@ function App() {
       </header>
 
       <main className="w-full max-w-4xl space-y-6 relative z-10 flex flex-col items-center">
+
+        {!error && (isStarting || isReady) ? (
+          <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+            {isStarting ? 'Starting microphone…' : 'Listening…'}
+          </div>
+        ) : null}
 
         {error && (
           <div className="mb-6 w-full space-y-2">

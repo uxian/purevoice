@@ -16,6 +16,7 @@ export function useAudio() {
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isReady, setIsReady] = useState(false);
+    const [isStarting, setIsStarting] = useState(false);
 
     const streamRef = useRef<MediaStream | null>(null);
     const ctxRef = useRef<AudioContext | null>(null);
@@ -31,6 +32,7 @@ export function useAudio() {
     const startAudio = useCallback(async () => {
         // Clear any previous error immediately so the user sees we are retrying.
         setError(null);
+        setIsStarting(true);
 
         let ctx: AudioContext | null = null;
         try {
@@ -60,6 +62,7 @@ export function useAudio() {
             setStream(userStream);
             setIsReady(true);
             setError(null);
+            setIsStarting(false);
         } catch (err: unknown) {
             // If we created an AudioContext but failed later (e.g. getUserMedia), close it to avoid leaks.
             if (ctx && ctx.state !== 'closed') {
@@ -68,10 +71,12 @@ export function useAudio() {
             console.error('Error starting audio:', err);
             setError(getMicErrorMessage(err));
             setIsReady(false);
+            setIsStarting(false);
         }
     }, []);
 
     const stopAudio = useCallback(() => {
+        setIsStarting(false);
         if (streamRef.current) {
             streamRef.current.getTracks().forEach(track => track.stop());
             setStream(null);
@@ -94,5 +99,5 @@ export function useAudio() {
         };
     }, []);
 
-    return { startAudio, stopAudio, isReady, audioContext, stream, error };
+    return { startAudio, stopAudio, isReady, isStarting, audioContext, stream, error };
 }
