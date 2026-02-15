@@ -1,4 +1,16 @@
-export const MIC_ERROR_MESSAGES: Record<string, string> = {
+export type MicErrorName =
+    | 'NotAllowedError'
+    | 'PermissionDeniedError'
+    | 'NotFoundError'
+    | 'DevicesNotFoundError'
+    | 'NotReadableError'
+    | 'TrackStartError'
+    | 'OverconstrainedError'
+    | 'ConstraintNotSatisfiedError'
+    | 'SecurityError'
+    | 'AbortError';
+
+export const MIC_ERROR_MESSAGES = {
     NotAllowedError: 'Microphone permission denied. Please allow access in your browser settings and try again.',
     PermissionDeniedError:
         'Microphone permission denied. Please allow access in your browser settings and try again.',
@@ -19,8 +31,12 @@ export const MIC_ERROR_MESSAGES: Record<string, string> = {
     SecurityError: 'Microphone access blocked by security settings. Make sure you are on HTTPS (or localhost).',
 
     AbortError: 'Microphone request was aborted. Please try again.',
-};
+} satisfies Record<MicErrorName, string>;
 
 export function getMicErrorMessageForName(name: string): string {
-    return MIC_ERROR_MESSAGES[name] ?? `Microphone error: ${name}`;
+    if (name in MIC_ERROR_MESSAGES) {
+        return MIC_ERROR_MESSAGES[name as MicErrorName];
+    }
+
+    return `Microphone error: ${name}`;
 }
