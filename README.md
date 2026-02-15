@@ -21,3 +21,12 @@ Pure Voice is a lightweight, browser-based singing practice playground (song lib
 - **Device selection:** confirm the correct input is selected in your OS sound settings and/or the browser’s site settings.
 - **Device busy:** close other apps/tabs using the mic (Zoom/Meet/Discord) and refresh.
 - **Safari/iOS:** if it behaves oddly, try Chrome/Edge on desktop first to verify the mic works.
+
+### FAQ (common mic errors)
+
+These map to the in-app messages from `getUserMedia` errors:
+
+- **“Microphone permission denied” (NotAllowed / PermissionDenied):** allow mic permission for the site, then reload.
+- **“No microphone found” (NotFound):** plug in a mic / select the correct OS input device, then retry.
+- **“Microphone is in use” (NotReadable / TrackStart):** close other apps using the mic (Zoom/Meet/Discord), then refresh.
+- **“Blocked by security settings” (SecurityError):** use HTTPS (or `http://localhost`).
