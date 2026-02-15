@@ -1,11 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAudio } from './hooks/useAudio';
 // import { usePitchDetector } from './hooks/usePitchDetector'; // Moved to PitchVisualizer
 import { PitchVisualizer } from './components/PitchVisualizer';
 import { ReferenceTonePlayer } from './components/ReferenceTonePlayer';
-import { Mic, MicOff, Music, Sparkles, Activity, Play, Square, ArrowDown, ChevronDown, ListMusic, Search } from 'lucide-react';
+import {
+  Mic,
+  MicOff,
+  Music,
+  Sparkles,
+  Activity,
+  Play,
+  Square,
+  ArrowDown,
+  ChevronDown,
+  ListMusic,
+  Search,
+  Star,
+} from 'lucide-react';
 import { SONGS, getSongById, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
+
+const FAVORITES_STORAGE_KEY = 'purevoice:favorites:v1';
+
+const loadFavorites = (): Set<string> => {
+  try {
+    const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+    if (!raw) return new Set();
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return new Set();
+    return new Set(parsed.filter((x): x is string => typeof x === 'string'));
+  } catch {
+    return new Set();
+  }
+};
 
 function App() {
   const { startAudio, stopAudio, audioContext, stream, isReady, error } = useAudio();
@@ -16,6 +43,8 @@ function App() {
   const [useLowOctave, setUseLowOctave] = useState(false);
   const [selectedSongId, setSelectedSongId] = useState<string>('twinkle');
   const [songQuery, setSongQuery] = useState('');
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [favoriteSongIds, setFavoriteSongIds] = useState<Set<string>>(() => loadFavorites());
 
   const toggleSong = () => {
     setIsPlayingSong(!isPlayingSong);
@@ -26,27 +55,49 @@ function App() {
     setIsPlayingSong(false); // Reset playback on change
   };
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(Array.from(favoriteSongIds)));
+    } catch {
+      // ignore
+    }
+  }, [favoriteSongIds]);
+
+  const toggleFavoriteForSelectedSong = () => {
+    if (selectedSongId === 'free') return;
+    setFavoriteSongIds(prev => {
+      const next = new Set(prev);
+      if (next.has(selectedSongId)) next.delete(selectedSongId);
+      else next.add(selectedSongId);
+      return next;
+    });
+  };
+
   // Determine current song object
   const baseSong: Song | undefined = selectedSongId === 'free' ? undefined : getSongById(selectedSongId);
   const currentSong: Song | undefined = baseSong
     ? (useLowOctave ? transposeSong(baseSong, -12) : baseSong)
     : undefined;
 
+  const baseSongs = favoritesOnly ? SONGS.filter(song => favoriteSongIds.has(song.id)) : SONGS;
+
   const q = songQuery.trim().toLowerCase();
   const filteredSongs = q
-    ? SONGS.filter(song => {
+    ? baseSongs.filter(song => {
       const haystack = [song.title, song.meta.artist ?? '', song.meta.language, ...song.meta.tags]
         .join(' ')
         .toLowerCase();
       return haystack.includes(q);
     })
-    : SONGS;
+    : baseSongs;
 
   const selectedBaseSong = selectedSongId === 'free' ? undefined : getSongById(selectedSongId);
   const songsForSelect =
-    q && selectedBaseSong && !filteredSongs.some(s => s.id === selectedBaseSong.id)
+    (q || favoritesOnly) && selectedBaseSong && !filteredSongs.some(s => s.id === selectedBaseSong.id)
       ? [selectedBaseSong, ...filteredSongs]
       : filteredSongs;
+
+  const selectedIsFavorite = selectedSongId !== 'free' && favoriteSongIds.has(selectedSongId);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden font-sans text-slate-600">
@@ -145,6 +196,35 @@ function App() {
                       <option value="free">🎤 Free Style Mode</option>
                     </select>
                     <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 px-1">
+                    <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 select-none cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={favoritesOnly}
+                        onChange={e => setFavoritesOnly(e.target.checked)}
+                        className="h-4 w-4 rounded border-slate-300 text-rose-500 focus:ring-rose-200"
+                      />
+                      Favorites only
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={toggleFavoriteForSelectedSong}
+                      disabled={selectedSongId === 'free'}
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                        selectedSongId === 'free'
+                          ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
+                          : selectedIsFavorite
+                            ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                            : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
+                      }`}
+                      title={selectedSongId === 'free' ? 'Favorites not available in Free Style mode' : selectedIsFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <Star size={14} className={selectedIsFavorite ? 'fill-current' : ''} />
+                      {selectedIsFavorite ? 'Saved' : 'Save'}
+                    </button>
                   </div>
                 </div>
 
