@@ -63,7 +63,7 @@ export function useAudio() {
         } catch (err: unknown) {
             // If we created an AudioContext but failed later (e.g. getUserMedia), close it to avoid leaks.
             if (ctx && ctx.state !== 'closed') {
-                ctx.close();
+                void ctx.close();
             }
             console.error('Error starting audio:', err);
             setError(getMicErrorMessage(err));
@@ -77,7 +77,7 @@ export function useAudio() {
             setStream(null);
         }
         if (ctxRef.current && ctxRef.current.state !== 'closed') {
-            ctxRef.current.close();
+            void ctxRef.current.close();
             setAudioContext(null);
         }
         setIsReady(false);
@@ -89,7 +89,7 @@ export function useAudio() {
                 streamRef.current.getTracks().forEach(t => t.stop());
             }
             if (ctxRef.current && ctxRef.current.state !== 'closed') {
-                ctxRef.current.close();
+                void ctxRef.current.close();
             }
         };
     }, []);
