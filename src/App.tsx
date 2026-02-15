@@ -17,8 +17,9 @@ import {
   Search,
   Star,
 } from 'lucide-react';
-import { SONGS, getSongById, transposeSong } from './data/songs';
+import { SONGS, getSongById, getSongRange, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
+import { midiToNoteName } from './utils/noteUtils';
 
 const FAVORITES_STORAGE_KEY = 'purevoice:favorites:v1';
 
@@ -80,6 +81,8 @@ function App() {
   const currentSong: Song | undefined = baseSong
     ? (useLowOctave ? transposeSong(baseSong, -12) : baseSong)
     : undefined;
+
+  const currentSongRange = currentSong ? getSongRange(currentSong) : null;
 
   const baseSongs = favoritesOnly ? SONGS.filter(song => favoriteSongIds.has(song.id)) : SONGS;
   const showFavoritesEmptyHint = favoritesOnly && baseSongs.length === 0;
@@ -245,6 +248,14 @@ function App() {
                     </select>
                     <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                   </div>
+
+                  {selectedSongId !== 'free' && currentSongRange ? (
+                    <div className="px-1 -mt-0.5">
+                      <p className="text-[11px] font-semibold text-slate-400">
+                        Range: {midiToNoteName(currentSongRange.midiMin)}–{midiToNoteName(currentSongRange.midiMax)}
+                      </p>
+                    </div>
+                  ) : null}
 
                   <div className="flex items-center justify-between gap-2 px-1">
                     <label className="flex items-center gap-2 text-xs font-semibold text-slate-500 select-none cursor-pointer">

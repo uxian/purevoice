@@ -13,6 +13,12 @@ export const NOTES = [
   "B",
 ];
 
+export function midiToNoteName(midi: number): string {
+  const noteName = NOTES[((midi % 12) + 12) % 12];
+  const octave = Math.floor(midi / 12) - 1;
+  return `${noteName}${octave}`;
+}
+
 /**
  * Converts a frequency in Hz to a MIDI note number.
  * formula: note = 69 + 12 * log2(freq / 440)
