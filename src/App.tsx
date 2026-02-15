@@ -21,6 +21,7 @@ import { SONGS, getSongById, getSongRange, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
 import { midiToNoteName } from './utils/noteUtils';
 import { MIC_TROUBLESHOOTING_TIPS } from './constants/micTroubleshooting';
+import { MIC_ERROR_DETAILS } from './constants/micErrors';
 
 const FAVORITES_STORAGE_KEY = 'purevoice:favorites:v1';
 
@@ -48,6 +49,10 @@ function App() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteSongIds, setFavoriteSongIds] = useState<Set<string>>(() => loadFavorites());
   const [showMicHelp, setShowMicHelp] = useState(false);
+
+  const micErrorDetails = error?.name && error.name in MIC_ERROR_DETAILS
+    ? MIC_ERROR_DETAILS[error.name as keyof typeof MIC_ERROR_DETAILS]
+    : null;
 
   const toggleSong = () => {
     setIsPlayingSong(!isPlayingSong);
@@ -149,7 +154,7 @@ function App() {
               className="flex items-center justify-center gap-3 text-rose-600 bg-rose-50 border border-rose-100 p-4 rounded-xl w-full shadow-sm"
             >
               <Activity size={20} />
-              <span className="text-sm font-medium">{error}</span>
+              <span className="text-sm font-medium">{error.message}</span>
               <button
                 type="button"
                 onClick={() => startAudio()}
@@ -177,6 +182,17 @@ function App() {
                 aria-label="Microphone troubleshooting"
                 className="text-xs text-slate-600 bg-white/70 backdrop-blur border border-slate-100 rounded-xl p-4"
               >
+                {micErrorDetails ? (
+                  <div className="mb-3">
+                    <div className="font-semibold text-slate-700">Suggestions for this error:</div>
+                    <ul className="list-disc pl-5 space-y-1 mt-1">
+                      {micErrorDetails.fixes.map(fix => (
+                        <li key={fix}>{fix}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
                 <ul className="list-disc pl-5 space-y-1">
                   {MIC_TROUBLESHOOTING_TIPS.map(tip => (
                     <li key={tip.label}>

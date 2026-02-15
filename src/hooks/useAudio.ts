@@ -1,20 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getMicErrorMessageForName } from '../constants/micErrors';
 
-function getMicErrorMessage(err: unknown): string {
+type AudioStartError = {
+    message: string;
+    name?: string;
+};
+
+function getMicError(err: unknown): AudioStartError {
     // DOMException is typical for getUserMedia errors.
     if (err instanceof DOMException) {
-        return getMicErrorMessageForName(err.name);
+        return { name: err.name, message: getMicErrorMessageForName(err.name) };
     }
 
-    if (err instanceof Error && err.message) return err.message;
-    return 'Error accessing microphone';
+    if (err instanceof Error && err.message) return { message: err.message };
+    return { message: 'Error accessing microphone' };
 }
 
 export function useAudio() {
     const [stream, setStream] = useState<MediaStream | null>(null);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<AudioStartError | null>(null);
     const [isReady, setIsReady] = useState(false);
     const [isStarting, setIsStarting] = useState(false);
 
@@ -69,7 +74,7 @@ export function useAudio() {
                 void ctx.close();
             }
             console.error('Error starting audio:', err);
-            setError(getMicErrorMessage(err));
+            setError(getMicError(err));
             setIsReady(false);
             setIsStarting(false);
         }
