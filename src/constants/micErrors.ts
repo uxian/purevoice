@@ -108,9 +108,13 @@ export const MIC_ERROR_MESSAGES = {
     AbortError: 'Microphone request was aborted. Please try again.',
 } satisfies Record<MicErrorName, string>;
 
+export function isMicErrorName(name: string): name is MicErrorName {
+    return name in MIC_ERROR_MESSAGES;
+}
+
 export function getMicErrorMessageForName(name: string): string {
-    if (name in MIC_ERROR_MESSAGES) {
-        return MIC_ERROR_MESSAGES[name as MicErrorName];
+    if (isMicErrorName(name)) {
+        return MIC_ERROR_MESSAGES[name];
     }
 
     return `Microphone error: ${name}`;

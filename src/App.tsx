@@ -21,7 +21,7 @@ import { SONGS, getSongById, getSongRange, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
 import { midiToNoteName } from './utils/noteUtils';
 import { MIC_TROUBLESHOOTING_TIPS } from './constants/micTroubleshooting';
-import { MIC_ERROR_DETAILS } from './constants/micErrors';
+import { isMicErrorName, MIC_ERROR_DETAILS } from './constants/micErrors';
 
 const FAVORITES_STORAGE_KEY = 'purevoice:favorites:v1';
 
@@ -50,8 +50,8 @@ function App() {
   const [favoriteSongIds, setFavoriteSongIds] = useState<Set<string>>(() => loadFavorites());
   const [showMicHelp, setShowMicHelp] = useState(false);
 
-  const micErrorDetails = error?.name && error.name in MIC_ERROR_DETAILS
-    ? MIC_ERROR_DETAILS[error.name as keyof typeof MIC_ERROR_DETAILS]
+  const micErrorDetails = error?.name && isMicErrorName(error.name)
+    ? MIC_ERROR_DETAILS[error.name]
     : null;
 
   const toggleSong = () => {
