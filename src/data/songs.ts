@@ -30,7 +30,8 @@ export interface Song {
   meta: SongMeta;
 }
 
-export const getSongRange = (song: Pick<Song, 'notes'>): SongRange => {
+export const getSongRange = (song: Pick<Song, 'notes'>): SongRange | null => {
+  if (song.notes.length === 0) return null;
   const midis = song.notes.map(n => n.midi);
   return {
     midiMin: Math.min(...midis),
