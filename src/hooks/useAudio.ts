@@ -1,5 +1,33 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
+function getMicErrorMessage(err: unknown): string {
+    // DOMException is typical for getUserMedia errors.
+    if (err instanceof DOMException) {
+        switch (err.name) {
+            case 'NotAllowedError':
+            case 'PermissionDeniedError':
+                return 'Microphone permission denied. Please allow access in your browser settings and try again.';
+            case 'NotFoundError':
+            case 'DevicesNotFoundError':
+                return 'No microphone found. Please connect a mic or check your OS input settings.';
+            case 'NotReadableError':
+            case 'TrackStartError':
+                return 'Microphone is in use by another app, or could not be started. Close other apps (Zoom, Meet) and try again.';
+            case 'OverconstrainedError':
+                return 'Your microphone does not support the requested audio constraints. Try a different input device.';
+            case 'SecurityError':
+                return 'Microphone access blocked by security settings. Make sure you are on HTTPS (or localhost).';
+            case 'AbortError':
+                return 'Microphone request was aborted. Please try again.';
+            default:
+                return `Microphone error: ${err.name}`;
+        }
+    }
+
+    if (err instanceof Error && err.message) return err.message;
+    return 'Error accessing microphone';
+}
+
 export function useAudio() {
     const [stream, setStream] = useState<MediaStream | null>(null);
     const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
@@ -29,6 +57,10 @@ export function useAudio() {
                 await ctx.resume();
             }
 
+            if (!navigator.mediaDevices?.getUserMedia) {
+                throw new Error('Microphone access is not supported in this browser');
+            }
+
             const userStream = await navigator.mediaDevices.getUserMedia({
                 audio: {
                     echoCancellation: false,
@@ -43,8 +75,7 @@ export function useAudio() {
             setError(null);
         } catch (err: unknown) {
             console.error('Error starting audio:', err);
-            const message = err instanceof Error ? err.message : 'Error accessing microphone';
-            setError(message);
+            setError(getMicErrorMessage(err));
             setIsReady(false);
         }
     }, []);
