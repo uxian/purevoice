@@ -178,7 +178,7 @@ function App() {
                       onChange={e => setSongQuery(e.target.value)}
                       placeholder="Search songs (title / artist / tags)…"
                       aria-label="Search songs"
-                      className="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white pl-11 pr-4 py-2.5 rounded-2xl text-sm font-semibold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 transition-all outline-none"
+                      className="w-full bg-slate-50 hover:bg-slate-100 focus:bg-white pl-11 pr-4 py-2.5 rounded-2xl text-sm font-semibold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white transition-all outline-none"
                     />
                   </div>
 
@@ -190,7 +190,7 @@ function App() {
                       value={selectedSongId}
                       onChange={handleSongChange}
                       aria-label="Select song"
-                      className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 cursor-pointer transition-all outline-none"
+                      className="w-full appearance-none bg-slate-50 hover:bg-slate-100 focus:bg-white pl-12 pr-10 py-3 md:py-3.5 rounded-2xl text-sm font-bold text-slate-700 border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-rose-200 focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white cursor-pointer transition-all outline-none"
                     >
                       {songsForSelect.length === 0 && songQuery.trim() ? (
                         <option value="" disabled>
@@ -223,7 +223,7 @@ function App() {
                       type="button"
                       onClick={toggleFavoriteForSelectedSong}
                       disabled={selectedSongId === 'free'}
-                      className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                      className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${
                         selectedSongId === 'free'
                           ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
                           : selectedIsFavorite
@@ -260,7 +260,7 @@ function App() {
                   {selectedSongId !== 'free' && (
                     <button
                       onClick={toggleSong}
-                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm ${isPlayingSong ? 'bg-rose-500 text-white shadow-rose-200 hover:bg-rose-600' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
+                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${isPlayingSong ? 'bg-rose-500 text-white shadow-rose-200 hover:bg-rose-600' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
                     >
                       {isPlayingSong ? <Square size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
                       <span>{isPlayingSong ? 'STOP' : 'PLAY'}</span>
@@ -270,7 +270,7 @@ function App() {
                   {isPlayingSong && selectedSongId !== 'free' && (
                     <button
                       onClick={() => setUseLowOctave(!useLowOctave)}
-                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-semibold text-xs transition-all border animate-in fade-in slide-in-from-left-2 duration-300 ${useLowOctave ? 'bg-indigo-50 text-indigo-600 border-indigo-200 ring-2 ring-indigo-100' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
+                      className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-semibold text-xs transition-all border animate-in fade-in slide-in-from-left-2 duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white ${useLowOctave ? 'bg-indigo-50 text-indigo-600 border-indigo-200 ring-2 ring-indigo-100' : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
                     >
                       <ArrowDown size={14} className={useLowOctave ? 'translate-y-0.5' : ''} />
                       <span>{useLowOctave ? 'Low Octave' : 'Lower Octave'}</span>
@@ -284,7 +284,7 @@ function App() {
                   <button
                     onClick={stopAudio}
                     aria-label="End session (stop microphone)"
-                    className="md:ml-auto group flex items-center justify-center gap-2 px-4 py-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100 text-xs font-bold hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all cursor-pointer whitespace-nowrap active:scale-95"
+                    className="md:ml-auto group flex items-center justify-center gap-2 px-4 py-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100 text-xs font-bold hover:bg-rose-50 hover:text-rose-500 hover:border-rose-100 transition-all cursor-pointer whitespace-nowrap active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
                     title="Click to End Session"
                   >
                     <span className="relative flex h-2.5 w-2.5 group-hover:hidden">
