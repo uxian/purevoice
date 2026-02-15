@@ -80,6 +80,7 @@ function App() {
     : undefined;
 
   const baseSongs = favoritesOnly ? SONGS.filter(song => favoriteSongIds.has(song.id)) : SONGS;
+  const showFavoritesEmptyHint = favoritesOnly && baseSongs.length === 0;
 
   const q = songQuery.trim().toLowerCase();
   const filteredSongs = q
@@ -231,6 +232,12 @@ function App() {
                       {selectedIsFavorite ? 'Saved' : 'Save'}
                     </button>
                   </div>
+
+                  {showFavoritesEmptyHint ? (
+                    <div className="px-1 -mt-1">
+                      <p className="text-[11px] font-semibold text-slate-400">No favorites yet — save a song</p>
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Divider for Desktop */}
