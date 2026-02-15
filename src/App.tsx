@@ -45,6 +45,7 @@ function App() {
   const [songQuery, setSongQuery] = useState('');
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [favoriteSongIds, setFavoriteSongIds] = useState<Set<string>>(() => loadFavorites());
+  const [showMicHelp, setShowMicHelp] = useState(false);
 
   const toggleSong = () => {
     setIsPlayingSong(!isPlayingSong);
@@ -62,6 +63,7 @@ function App() {
       // ignore
     }
   }, [favoriteSongIds]);
+
 
   const toggleFavoriteForSelectedSong = () => {
     if (selectedSongId === 'free') return;
@@ -129,9 +131,38 @@ function App() {
       <main className="w-full max-w-4xl space-y-6 relative z-10 flex flex-col items-center">
 
         {error && (
-          <div className="mb-6 flex items-center gap-3 text-rose-600 bg-rose-50 border border-rose-100 p-4 rounded-xl w-full justify-center shadow-sm">
-            <Activity size={20} />
-            <span className="text-sm font-medium">{error}</span>
+          <div className="mb-6 w-full space-y-2">
+            <div className="flex items-center justify-center gap-3 text-rose-600 bg-rose-50 border border-rose-100 p-4 rounded-xl w-full shadow-sm">
+              <Activity size={20} />
+              <span className="text-sm font-medium">{error}</span>
+              <button
+                type="button"
+                onClick={() => setShowMicHelp(v => !v)}
+                className="ml-2 text-xs font-bold underline underline-offset-2 decoration-rose-300 hover:decoration-rose-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 focus-visible:ring-offset-rose-50 rounded"
+                aria-label={showMicHelp ? 'Hide microphone troubleshooting' : 'Show microphone troubleshooting'}
+              >
+                {showMicHelp ? 'Hide help' : 'Troubleshoot'}
+              </button>
+            </div>
+
+            {showMicHelp ? (
+              <div className="text-xs text-slate-600 bg-white/70 backdrop-blur border border-slate-100 rounded-xl p-4">
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>
+                    <span className="font-semibold">Permissions:</span> click the lock icon in the address bar → allow Microphone, then reload.
+                  </li>
+                  <li>
+                    <span className="font-semibold">Secure context:</span> use HTTPS (or <code className="font-mono">http://localhost</code>).
+                  </li>
+                  <li>
+                    <span className="font-semibold">Device selection:</span> confirm the correct input is selected in your OS sound settings.
+                  </li>
+                  <li>
+                    <span className="font-semibold">Device busy:</span> close other apps using the mic (Zoom/Meet/Discord) and refresh.
+                  </li>
+                </ul>
+              </div>
+            ) : null}
           </div>
         )}
 
