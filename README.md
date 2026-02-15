@@ -26,7 +26,7 @@ In-app “Troubleshoot” uses the same checklist (see `src/constants/micTrouble
 
 ### FAQ (common mic errors)
 
-These map to the in-app messages from `getUserMedia` errors:
+These map to the in-app messages from `getUserMedia` errors (see `src/constants/micErrors.ts`):
 
 - **“Microphone permission denied” (NotAllowed / PermissionDenied):** allow mic permission for the site, then reload.
 - **“No microphone found” (NotFound):** plug in a mic / select the correct OS input device, then retry.

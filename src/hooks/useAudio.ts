@@ -1,27 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { getMicErrorMessageForName } from '../constants/micErrors';
 
 function getMicErrorMessage(err: unknown): string {
     // DOMException is typical for getUserMedia errors.
     if (err instanceof DOMException) {
-        switch (err.name) {
-            case 'NotAllowedError':
-            case 'PermissionDeniedError':
-                return 'Microphone permission denied. Please allow access in your browser settings and try again.';
-            case 'NotFoundError':
-            case 'DevicesNotFoundError':
-                return 'No microphone found. Please connect a mic or check your OS input settings.';
-            case 'NotReadableError':
-            case 'TrackStartError':
-                return 'Microphone is in use by another app, or could not be started. Close other apps (Zoom, Meet) and try again.';
-            case 'OverconstrainedError':
-                return 'Your microphone does not support the requested audio constraints. Try a different input device.';
-            case 'SecurityError':
-                return 'Microphone access blocked by security settings. Make sure you are on HTTPS (or localhost).';
-            case 'AbortError':
-                return 'Microphone request was aborted. Please try again.';
-            default:
-                return `Microphone error: ${err.name}`;
-        }
+        return getMicErrorMessageForName(err.name);
     }
 
     if (err instanceof Error && err.message) return err.message;
