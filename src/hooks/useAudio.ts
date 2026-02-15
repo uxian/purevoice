@@ -46,6 +46,9 @@ export function useAudio() {
     }, [audioContext]);
 
     const startAudio = useCallback(async () => {
+        // Clear any previous error immediately so the user sees we are retrying.
+        setError(null);
+
         let ctx: AudioContext | null = null;
         try {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
