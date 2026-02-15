@@ -46,12 +46,13 @@ export function useAudio() {
     }, [audioContext]);
 
     const startAudio = useCallback(async () => {
+        let ctx: AudioContext | null = null;
         try {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             if (!AudioContextClass) {
                 throw new Error('AudioContext is not supported in this browser');
             }
-            const ctx = new AudioContextClass();
+            ctx = new AudioContextClass();
 
             if (ctx.state === 'suspended') {
                 await ctx.resume();
@@ -74,6 +75,10 @@ export function useAudio() {
             setIsReady(true);
             setError(null);
         } catch (err: unknown) {
+            // If we created an AudioContext but failed later (e.g. getUserMedia), close it to avoid leaks.
+            if (ctx && ctx.state !== 'closed') {
+                ctx.close();
+            }
             console.error('Error starting audio:', err);
             setError(getMicErrorMessage(err));
             setIsReady(false);
