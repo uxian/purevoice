@@ -16,6 +16,8 @@ Pure Voice is a lightweight, browser-based singing practice playground (song lib
 
 ## Microphone troubleshooting
 
+In-app “Troubleshoot” uses the same checklist (see `src/constants/micTroubleshooting.ts`).
+
 - **Permissions:** click the lock icon in the address bar → allow Microphone. If you previously blocked it, reset the permission and reload.
 - **Secure context:** most browsers require HTTPS (or `http://localhost`) for microphone access.
 - **Device selection:** confirm the correct input is selected in your OS sound settings and/or the browser’s site settings.

@@ -20,6 +20,7 @@ import {
 import { SONGS, getSongById, getSongRange, transposeSong } from './data/songs';
 import type { Song } from './data/songs';
 import { midiToNoteName } from './utils/noteUtils';
+import { MIC_TROUBLESHOOTING_TIPS } from './constants/micTroubleshooting';
 
 const FAVORITES_STORAGE_KEY = 'purevoice:favorites:v1';
 
@@ -159,18 +160,23 @@ function App() {
             {showMicHelp ? (
               <div className="text-xs text-slate-600 bg-white/70 backdrop-blur border border-slate-100 rounded-xl p-4">
                 <ul className="list-disc pl-5 space-y-1">
-                  <li>
-                    <span className="font-semibold">Permissions:</span> click the lock icon in the address bar → allow Microphone, then reload.
-                  </li>
-                  <li>
-                    <span className="font-semibold">Secure context:</span> use HTTPS (or <code className="font-mono">http://localhost</code>).
-                  </li>
-                  <li>
-                    <span className="font-semibold">Device selection:</span> confirm the correct input is selected in your OS sound settings.
-                  </li>
-                  <li>
-                    <span className="font-semibold">Device busy:</span> close other apps using the mic (Zoom/Meet/Discord) and refresh.
-                  </li>
+                  {MIC_TROUBLESHOOTING_TIPS.map(tip => (
+                    <li key={tip.label}>
+                      <span className="font-semibold">{tip.label}:</span>{' '}
+                      {tip.text.includes('http://localhost') ? (() => {
+                        const parts = tip.text.split('http://localhost');
+                        return (
+                          <>
+                            {parts[0]}
+                            <code className="font-mono">http://localhost</code>
+                            {parts[1]}
+                          </>
+                        );
+                      })() : (
+                        tip.text
+                      )}
+                    </li>
+                  ))}
                 </ul>
               </div>
             ) : null}
